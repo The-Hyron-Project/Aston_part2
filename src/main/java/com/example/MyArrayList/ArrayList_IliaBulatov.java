@@ -39,7 +39,7 @@ public class ArrayList_IliaBulatov<E> implements IntensiveList<E> {
     if(lastInsertedPosition<0){
       return 0;
     }else{
-      return lastInsertedPosition;
+      return lastInsertedPosition+1;
     }
   }
 
@@ -116,21 +116,9 @@ public class ArrayList_IliaBulatov<E> implements IntensiveList<E> {
   @Override
   public void quickSort(Comparator<E> comparator) {
     if(lastInsertedPosition>0){
-      int firstPart;
-      int secondPart;
-      if(lastInsertedPosition==1){
-        firstPart=1;
-        secondPart=1;
-      }
-      else if(lastInsertedPosition % 2 == 0){
-        firstPart = lastInsertedPosition/2;
-        secondPart = lastInsertedPosition/2;
-      }else{
-        firstPart = lastInsertedPosition/2;
-        secondPart = lastInsertedPosition/2+1;
-      }
-      E[] leftElementData = (E[]) new Object[firstPart];
-      E[] rightElementData = (E[]) new Object[secondPart];
+      E[] leftElementData = (E[]) new Object[lastInsertedPosition+1];
+      E[] rightElementData = (E[]) new Object[lastInsertedPosition+1];
+      E[] elementTemporalCopy0 = (E[]) new Object[lastInsertedPosition+1];
       int countL=0;
       int countR=0;
       E middleElement = elementData[lastInsertedPosition/2];
@@ -144,36 +132,29 @@ public class ArrayList_IliaBulatov<E> implements IntensiveList<E> {
           countR++;
         }
       }
-      System.arraycopy(elementData, 0, quickSortRecircive(comparator,leftElementData, firstPart), 0, firstPart);
-      System.arraycopy(elementData, secondPart, quickSortRecircive(comparator,rightElementData, secondPart), secondPart, secondPart);
+      if(countL>0){
+        System.arraycopy(quickSortRecurcive(comparator,leftElementData, countL-1), 0, elementTemporalCopy0, 0, countL);
+      }
+        elementTemporalCopy0[countL]=middleElement;
+      if(countR>0){
+        System.arraycopy(quickSortRecurcive(comparator,rightElementData, countR-1), 0, elementTemporalCopy0, countL+1, countR);
+      }
+      elementData=elementTemporalCopy0;
     }
     isSorted = true;
   }
 
-  private E[] quickSortRecircive(Comparator<E> comparator, E[] arr, int size){
-    if(size>1){
-      int firstPart;
-      int secondPart;
-      if(size==1){
-        firstPart=1;
-        secondPart=1;
-      }
-      else if(size % 2 == 0){
-        firstPart = size/2;
-        secondPart = size/2;
-      }else{
-        firstPart = size/2;
-        secondPart = size/2+1;
-      }
-      E[] finalArr = (E[]) new Object[size];
-      E[] leftElementData = (E[]) new Object[firstPart];
-      E[] rightElementData = (E[]) new Object[secondPart];
+  private E[] quickSortRecurcive(Comparator<E> comparator, E[] arr, int size){
+    if(size>0){
+      E[] leftElementData = (E[]) new Object[size+1];
+      E[] rightElementData = (E[]) new Object[size+1];
+      E[] elementTemporalCopy0 = (E[]) new Object[size+1];
       int countL=0;
       int countR=0;
       E middleElement = arr[size/2];
       for(int i = 0; i<=size;i++){
         if(i==size/2)continue;
-        if (comparator.compare(arr[i], middleElement)>0){
+        if (comparator.compare(arr[i], middleElement)<0){
           leftElementData[countL]=arr[i];
           countL++;
         }else{
@@ -181,8 +162,14 @@ public class ArrayList_IliaBulatov<E> implements IntensiveList<E> {
           countR++;
         }
       }
-      System.arraycopy(finalArr, 0, quickSortRecircive(comparator,leftElementData, firstPart), 0, firstPart);
-      System.arraycopy(finalArr, secondPart, quickSortRecircive(comparator,rightElementData, secondPart), secondPart, secondPart);
+      if(countL>0){
+        System.arraycopy(quickSortRecurcive(comparator,leftElementData, countL-1), 0, elementTemporalCopy0, 0, countL);
+      }
+      elementTemporalCopy0[countL]=middleElement;
+      if(countR>0){
+        System.arraycopy(quickSortRecurcive(comparator,rightElementData, countR-1), 0, elementTemporalCopy0, countL+1, countR);
+      }
+      return elementTemporalCopy0;
     }
     return arr;
   }
