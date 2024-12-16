@@ -282,4 +282,5 @@ public class ArrayList_IliaBulatov<E> implements IntensiveList<E> {
     System.arraycopy(elementTemporalCopy, 0, elementData, 0, size);
     size = newSize;
   }
+
 }
